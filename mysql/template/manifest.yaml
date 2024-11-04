@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: expense1
+  labels:    #replica set labels
+    app: mysql
+    tier: database
+    project: expense
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:  #these are used to select the pod to create replicas
+      app: mysql
+      tier: database
+      project: expense
+  template:   #this is pod template
+    metadata:
+      labels:  #these labels belongs to pod 
+        app: mysql
+        tier: database
+        project: expense
+    spec:
+      containers:
+      - name: mysql
+        image: santhan29/mysql:{{ Values.deployment.imageversion }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: mysql
+ namespace: expense1 
+spec: 
+  selector:
+    app: mysql
+    tier: database
+    project: expense
+  ports:
+    - name: mysql-port
+      protocol: TCP
+      port: 3306  #service port
+      targetPort: 3306 #container port 
