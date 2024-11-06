@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: expense1
+  labels:    #replica set labels
+    app: frontend
+    tier: web
+    project: expense 
+spec:
+  # modify replicas according to your case
+  replicas: {{ .Values.deployment.replicas }} 
+  selector:
+    matchLabels:  #these are used to select the pod to create replicas
+      app: frontend
+      tier: web
+      project: expense
+  template:   #this is pod template
+    metadata:
+      labels:  #these labels belongs to pod 
+        app: frontend
+        tier: web
+        project: expense 
+    spec:
+      containers:
+      - name: frontend
+        image: santhan29/frontend:{{ .Values.deployment.imageVersion }}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:  #limits should be greater than or equal to requests not less than 
+            cpu: 100m 
+            memory: 128Mi 
